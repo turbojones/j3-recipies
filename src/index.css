@@ -119,58 +119,36 @@ button {
   color: var(--brand-navy);
 }
 
-.page-list {
-  background-color: var(--brand-navy);
-  background-image: linear-gradient(
-      rgba(247, 245, 242, 0.55),
-      rgba(247, 245, 242, 0.7)
-    ),
-    url('/j3-brand.jpg');
-  background-size: cover;
-  background-position: 50% 12%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+.brand-hero {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  background: var(--brand-navy);
 }
 
-@supports (-webkit-touch-callout: none) {
-  .page-list {
-    background-attachment: scroll;
-  }
+.brand-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.page-list .search-bar {
-  background: #f7f5f2;
+.brand-hero-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.5rem 1rem 0.75rem;
+  background: linear-gradient(transparent, rgba(30, 58, 95, 0.75));
 }
 
-.page-list .group-heading {
-  background: #f7f5f2;
+.brand-hero-name {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
-
-.page-list .content {
-  background: transparent;
-}
-
-.page-list .recipe-row-title {
-  text-shadow: 0 1px 0 rgba(247, 245, 242, 0.85);
-}
-
-.page-list .recipe-row-meta {
-  text-shadow: 0 1px 0 rgba(247, 245, 242, 0.85);
-}
-
-.page-list .recipe-list {
-  background: rgba(247, 245, 242, 0.55);
-  border-radius: 12px;
-  padding: 0 0.65rem;
-}
-
-.page-list .empty {
-  background: rgba(247, 245, 242, 0.7);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-
 
 .search-input {
   width: 100%;
