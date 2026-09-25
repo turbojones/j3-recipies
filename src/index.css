@@ -48,8 +48,8 @@ button {
 
 .content {
   width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   padding: 1rem 1rem 2rem;
   flex: 1;
 }
@@ -86,8 +86,8 @@ button {
   top: 0;
   z-index: 10;
   width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   padding: 0.875rem 1rem 0.75rem;
   background: #f7f5f2;
   border-bottom: 1px solid #e4e0da;
@@ -122,8 +122,8 @@ button {
 .brand-hero {
   position: relative;
   width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--brand-navy);
@@ -159,11 +159,6 @@ button {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
-@media (min-width: 640px) {
-  .brand-hero {
-    max-width: 600px;
-  }
-}
 
 
 .search-input {
@@ -321,12 +316,6 @@ button {
   background: #8f1c1c;
 }
 
-@media (min-width: 640px) {
-  .content,
-  .search-bar {
-    max-width: 600px;
-  }
-}
 
 .detail-header {
   display: flex;
@@ -387,12 +376,12 @@ button {
 
 .sticky-cta-bar {
   position: fixed;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: 0;
-  transform: translateX(-50%);
   z-index: 20;
   width: 100%;
-  max-width: 560px;
+  max-width: none;
   padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(transparent, var(--brand-cream) 28%);
   box-sizing: border-box;
@@ -402,8 +391,3 @@ button {
   margin-top: 0;
 }
 
-@media (min-width: 640px) {
-  .sticky-cta-bar {
-    max-width: 600px;
-  }
-}
