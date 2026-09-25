@@ -124,14 +124,16 @@ button {
   width: 100%;
   max-width: none;
   margin: 0;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 2.4 / 1;
+  max-height: 160px;
   overflow: hidden;
   background: var(--brand-navy);
 }
 
 @media (min-width: 480px) {
   .brand-hero {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 3 / 1;
+    max-height: 200px;
   }
 }
 
