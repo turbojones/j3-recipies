@@ -14,19 +14,21 @@ export default function RecipeDetail() {
     return (
       <div className="page">
         <main className="content">
-          <Link to="/" className="detail-brand">
-            <img
-              src="/j3-brand.jpg"
-              alt=""
-              className="brand-mark"
-              aria-hidden="true"
-            />
-            <span className="detail-brand-name">J3 Recipies</span>
-          </Link>
+          <div className="detail-top-bar">
+            <Link to="/" className="back-button">
+              ← Back
+            </Link>
+            <Link to="/" className="detail-brand">
+              <img
+                src="/j3-brand.jpg"
+                alt=""
+                className="brand-mark"
+                aria-hidden="true"
+              />
+              <span className="detail-brand-name">J3 Recipies</span>
+            </Link>
+          </div>
           <p className="empty">Recipe not found.</p>
-          <Link to="/" className="back-link">
-            ← Back
-          </Link>
         </main>
       </div>
     )
@@ -45,19 +47,20 @@ export default function RecipeDetail() {
   return (
     <div className="page detail-page">
       <main className="content detail">
-        <Link to="/" className="detail-brand no-print">
-          <img
-            src="/j3-brand.jpg"
-            alt=""
-            className="brand-mark"
-            aria-hidden="true"
-          />
-          <span className="detail-brand-name">J3 Recipies</span>
-        </Link>
-        <Link to="/" className="back-link no-print">
-          ← Back
-        </Link>
-
+        <div className="detail-top-bar no-print">
+          <Link to="/" className="back-button">
+            ← Back
+          </Link>
+          <Link to="/" className="detail-brand">
+            <img
+              src="/j3-brand.jpg"
+              alt=""
+              className="brand-mark"
+              aria-hidden="true"
+            />
+            <span className="detail-brand-name">J3 Recipies</span>
+          </Link>
+        </div>
         <div className="detail-header">
           <h1 className="detail-title">{recipe.title}</h1>
           {!makeIt && (

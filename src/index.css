@@ -392,12 +392,45 @@ button {
 }
 
 
+.detail-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0.45rem 0.85rem;
+  border: 1.5px solid #d4cfc7;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--brand-navy);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.back-button:hover {
+  border-color: var(--brand-navy);
+  background: #f0f3f7;
+}
+
+.back-button:active {
+  background: #e4eaf2;
+}
+
 .detail-brand {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-bottom: 0.85rem;
+  margin: 0;
   text-decoration: none;
+  min-width: 0;
 }
 
 .detail-brand .brand-mark {
