@@ -34,7 +34,7 @@ export default function RecipeDetail() {
   }
 
   return (
-    <div className={`page${makeIt ? ' make-it-mode' : ''}`}>
+    <div className="page detail-page">
       <main className="content detail">
         <Link to="/" className="back-link no-print">
           ← Back
@@ -86,11 +86,17 @@ export default function RecipeDetail() {
             ))}
           </ol>
         </section>
+      </main>
 
-        {!makeIt && (
+      <div className="sticky-cta-bar no-print">
+        {makeIt ? (
+          <button type="button" className="cta" onClick={handleDone}>
+            Done
+          </button>
+        ) : (
           <button
             type="button"
-            className="cta no-print"
+            className="cta"
             onClick={() => {
               setMakeIt(true)
               window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -99,15 +105,7 @@ export default function RecipeDetail() {
             Make It
           </button>
         )}
-      </main>
-
-      {makeIt && (
-        <div className="sticky-cta-bar no-print">
-          <button type="button" className="cta" onClick={handleDone}>
-            Done
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   )
 }
