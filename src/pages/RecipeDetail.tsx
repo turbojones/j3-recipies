@@ -66,7 +66,7 @@ export default function RecipeDetail() {
           {!makeIt && (
             <button
               type="button"
-              className="print-link no-print"
+              className="pdf-button no-print"
               onClick={() => { void downloadRecipePdf(recipe) }}
             >
               Download PDF

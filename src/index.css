@@ -329,22 +329,31 @@ button {
   min-width: 0;
 }
 
-.print-link {
+.pdf-button {
   flex-shrink: 0;
-  margin-top: 0.35rem;
-  padding: 0;
-  border: none;
-  background: none;
-  color: #5a534c;
-  font-size: 0.95rem;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  margin-top: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.85rem;
+  border: 1.5px solid #d4cfc7;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--brand-navy);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.print-link:hover {
-  color: #1a1a1a;
+.pdf-button:hover {
+  border-color: var(--brand-navy);
+  background: #f0f3f7;
+}
+
+.pdf-button:active {
+  background: #e4eaf2;
 }
 
 @media print {
