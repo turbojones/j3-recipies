@@ -14,6 +14,15 @@ export default function RecipeDetail() {
     return (
       <div className="page">
         <main className="content">
+          <Link to="/" className="detail-brand">
+            <img
+              src="/j3-brand.jpg"
+              alt=""
+              className="brand-mark"
+              aria-hidden="true"
+            />
+            <span className="detail-brand-name">J3 Recipies</span>
+          </Link>
           <p className="empty">Recipe not found.</p>
           <Link to="/" className="back-link">
             ← Back
@@ -36,6 +45,15 @@ export default function RecipeDetail() {
   return (
     <div className="page detail-page">
       <main className="content detail">
+        <Link to="/" className="detail-brand no-print">
+          <img
+            src="/j3-brand.jpg"
+            alt=""
+            className="brand-mark"
+            aria-hidden="true"
+          />
+          <span className="detail-brand-name">J3 Recipies</span>
+        </Link>
         <Link to="/" className="back-link no-print">
           ← Back
         </Link>

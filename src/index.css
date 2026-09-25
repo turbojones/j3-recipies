@@ -391,3 +391,23 @@ button {
   margin-top: 0;
 }
 
+
+.detail-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+  text-decoration: none;
+}
+
+.detail-brand .brand-mark {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+
+.detail-brand-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--brand-navy);
+}
