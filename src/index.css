@@ -122,12 +122,12 @@ button {
 .page-list {
   background-color: var(--brand-navy);
   background-image: linear-gradient(
-      rgba(247, 245, 242, 0.45),
-      rgba(247, 245, 242, 0.62)
+      rgba(247, 245, 242, 0.55),
+      rgba(247, 245, 242, 0.7)
     ),
     url('/j3-brand.jpg');
   background-size: cover;
-  background-position: 50% 22%;
+  background-position: 50% 12%;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
