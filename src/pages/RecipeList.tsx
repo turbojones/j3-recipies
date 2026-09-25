@@ -60,18 +60,7 @@ export default function RecipeList() {
         : null
 
   return (
-    <div className="page">
-      <div className="brand-hero">
-        <img
-          src="/j3-brand.jpg"
-          alt="J3 Recipies"
-          className="brand-hero-img"
-        />
-        <div className="brand-hero-overlay">
-          <p className="brand-hero-name">J3 Recipies</p>
-        </div>
-      </div>
-
+    <div className="page page-list">
       <header className="search-bar" ref={searchBarRef}>
         <div className="brand-lockup">
           <img
