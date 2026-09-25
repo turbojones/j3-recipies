@@ -1,0 +1,378 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1a1a1a;
+  background: #f7f5f2;
+  --brand-navy: #1e3a5f;
+  --brand-red: #c62828;
+  --brand-cream: #f7f5f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.content {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  flex: 1;
+}
+
+.content.detail {
+  padding-bottom: 2.5rem;
+}
+
+
+.recipe-group {
+  margin-bottom: 1.75rem;
+}
+
+.recipe-group:last-child {
+  margin-bottom: 0;
+}
+
+.group-heading {
+  position: sticky;
+  top: var(--search-bar-height, 6.75rem);
+  z-index: 5;
+  margin: 0 0 0.35rem;
+  padding: 0.45rem 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b6560;
+  background: #f7f5f2;
+}
+/* Sticky search */
+.search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0.875rem 1rem 0.75rem;
+  background: #f7f5f2;
+  border-bottom: 1px solid #e4e0da;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 0.625rem;
+}
+
+.brand-mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  flex-shrink: 0;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #d4cfc7;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--brand-navy);
+}
+
+.brand-hero {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--brand-navy);
+}
+
+@media (min-width: 480px) {
+  .brand-hero {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.brand-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  display: block;
+}
+
+.brand-hero-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.5rem 1rem 0.75rem;
+  background: linear-gradient(transparent, rgba(30, 58, 95, 0.75));
+}
+
+.brand-hero-name {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+@media (min-width: 640px) {
+  .brand-hero {
+    max-width: 600px;
+  }
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  border: 1px solid #d4cfc7;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #8a7a68;
+}
+
+.empty {
+  margin: 2rem 0;
+  text-align: center;
+  color: #6b6560;
+}
+
+.recipe-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-list li + li {
+  border-top: 1px solid #e8e4de;
+}
+
+.recipe-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 0.15rem;
+  min-height: 48px;
+}
+
+.recipe-row:active,
+.recipe-row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.recipe-row-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.recipe-row-meta {
+  flex-shrink: 0;
+  color: #6b6560;
+  font-size: 0.9rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: #5a534c;
+  font-size: 0.95rem;
+}
+
+.detail-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.detail-meta {
+  margin: 0 0 1.5rem;
+  color: #6b6560;
+  font-size: 0.95rem;
+}
+
+.section {
+  margin-bottom: 1.5rem;
+}
+
+.section h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ingredient-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.ingredient-list li {
+  margin-bottom: 0.4rem;
+}
+
+.ingredient-list.make-it {
+  list-style: none;
+  padding-left: 0;
+}
+
+.ingredient-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.35rem 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ingredient-check input {
+  margin-top: 0.25rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  accent-color: var(--brand-red);
+}
+
+.ingredient-check .checked {
+  text-decoration: line-through;
+  color: #8a847c;
+}
+
+.steps-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.steps-list li {
+  margin-bottom: 0.65rem;
+}
+
+/* Full-width CTA under content; content already capped & centered */
+.cta {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cta:hover {
+  background: #a82121;
+}
+
+.cta:active {
+  background: #8f1c1c;
+}
+
+@media (min-width: 640px) {
+  .content,
+  .search-bar {
+    max-width: 600px;
+  }
+}
+
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.detail-header .detail-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.print-link {
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #5a534c;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.print-link:hover {
+  color: #1a1a1a;
+}
+
+@media print {
+  :root {
+    background: #fff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .content {
+    max-width: none;
+    padding: 0;
+  }
+
+  .page {
+    min-height: auto;
+  }
+}
