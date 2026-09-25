@@ -376,3 +376,28 @@ button {
     min-height: auto;
   }
 }
+
+.page.make-it-mode .content.detail {
+  padding-bottom: 5.5rem;
+}
+
+.sticky-cta-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(transparent, var(--brand-cream) 28%);
+}
+
+.sticky-cta-bar .cta {
+  margin-top: 0;
+}
+
+@media (min-width: 640px) {
+  .sticky-cta-bar {
+    max-width: 600px;
+  }
+}

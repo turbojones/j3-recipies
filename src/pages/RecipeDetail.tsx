@@ -14,7 +14,7 @@ export default function RecipeDetail() {
     return (
       <div className="page">
         <main className="content">
-          <p className="empty">No recipes match.</p>
+          <p className="empty">Recipe not found.</p>
           <Link to="/" className="back-link">
             ← Back
           </Link>
@@ -34,7 +34,7 @@ export default function RecipeDetail() {
   }
 
   return (
-    <div className="page">
+    <div className={`page${makeIt ? ' make-it-mode' : ''}`}>
       <main className="content detail">
         <Link to="/" className="back-link no-print">
           ← Back
@@ -87,11 +87,7 @@ export default function RecipeDetail() {
           </ol>
         </section>
 
-        {makeIt ? (
-          <button type="button" className="cta no-print" onClick={handleDone}>
-            Done
-          </button>
-        ) : (
+        {!makeIt && (
           <button
             type="button"
             className="cta no-print"
@@ -104,6 +100,14 @@ export default function RecipeDetail() {
           </button>
         )}
       </main>
+
+      {makeIt && (
+        <div className="sticky-cta-bar no-print">
+          <button type="button" className="cta" onClick={handleDone}>
+            Done
+          </button>
+        </div>
+      )}
     </div>
   )
 }
