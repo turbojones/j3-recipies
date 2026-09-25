@@ -9,22 +9,79 @@ const LINE = 16
 const TITLE_SIZE = 20
 const HEADING_SIZE = 13
 const BODY_SIZE = 11
+const BRAND_NAVY = [30, 58, 95] as const
+const BRAND_NAME = 'J3 Recipies'
+const FOOTER_Y = PAGE_HEIGHT - 28
+
+async function loadImageDataUrl(src: string): Promise<string | null> {
+  try {
+    const res = await fetch(src)
+    if (!res.ok) return null
+    const blob = await res.blob()
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  } catch {
+    return null
+  }
+}
 
 function wrapText(doc: jsPDF, text: string, maxWidth: number): string[] {
   return doc.splitTextToSize(text, maxWidth) as string[]
 }
 
 function ensureSpace(doc: jsPDF, y: number, needed: number): number {
-  if (y + needed > PAGE_HEIGHT - MARGIN) {
+  if (y + needed > PAGE_HEIGHT - MARGIN - 24) {
     doc.addPage()
-    return MARGIN
+    return MARGIN + 8
   }
   return y
 }
 
-export function downloadRecipePdf(recipe: Recipe) {
+function drawFooter(doc: jsPDF) {
+  const pageCount = doc.getNumberOfPages()
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i)
+    doc.setDrawColor(...BRAND_NAVY)
+    doc.setLineWidth(0.6)
+    doc.line(MARGIN, FOOTER_Y - 10, PAGE_WIDTH - MARGIN, FOOTER_Y - 10)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(...BRAND_NAVY)
+    doc.text(BRAND_NAME, MARGIN, FOOTER_Y)
+    doc.setTextColor(120)
+    doc.text(`Page ${i} of ${pageCount}`, PAGE_WIDTH - MARGIN, FOOTER_Y, {
+      align: 'right',
+    })
+  }
+  doc.setTextColor(0)
+}
+
+export async function downloadRecipePdf(recipe: Recipe) {
   const doc = new jsPDF({ unit: 'pt', format: 'letter' })
   let y = MARGIN
+
+  const logo = await loadImageDataUrl('/favicon-192.png')
+
+  // Brand header
+  const markSize = 36
+  if (logo) {
+    doc.addImage(logo, 'PNG', MARGIN, y - 6, markSize, markSize)
+  }
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(14)
+  doc.setTextColor(...BRAND_NAVY)
+  doc.text(BRAND_NAME, MARGIN + (logo ? markSize + 10 : 0), y + 16)
+  doc.setTextColor(0)
+  y += markSize + 14
+
+  doc.setDrawColor(...BRAND_NAVY)
+  doc.setLineWidth(1)
+  doc.line(MARGIN, y, PAGE_WIDTH - MARGIN, y)
+  y += 18
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(TITLE_SIZE)
@@ -79,6 +136,8 @@ export function downloadRecipePdf(recipe: Recipe) {
     }
     y += 4
   })
+
+  drawFooter(doc)
 
   const safeName = recipe.title
     .toLowerCase()

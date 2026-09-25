@@ -46,7 +46,7 @@ export default function RecipeDetail() {
             <button
               type="button"
               className="print-link no-print"
-              onClick={() => downloadRecipePdf(recipe)}
+              onClick={() => { void downloadRecipePdf(recipe) }}
             >
               Download PDF
             </button>
