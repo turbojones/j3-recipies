@@ -25,7 +25,7 @@ export default function RecipeDetail() {
                 className="brand-mark"
                 aria-hidden="true"
               />
-              <span className="detail-brand-name">J3 Recipies</span>
+              <span className="detail-brand-name">J3 Recipes</span>
             </Link>
           </div>
           <p className="empty">Recipe not found.</p>
@@ -58,7 +58,7 @@ export default function RecipeDetail() {
               className="brand-mark"
               aria-hidden="true"
             />
-            <span className="detail-brand-name">J3 Recipies</span>
+            <span className="detail-brand-name">J3 Recipes</span>
           </Link>
         </div>
         <div className="detail-header">

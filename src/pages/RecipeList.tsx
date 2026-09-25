@@ -64,11 +64,11 @@ export default function RecipeList() {
       <div className="brand-hero">
         <img
           src="/j3-brand.jpg"
-          alt="J3 Recipies"
+          alt="J3 Recipes"
           className="brand-hero-img"
         />
         <div className="brand-hero-overlay">
-          <p className="brand-hero-name">J3 Recipies</p>
+          <p className="brand-hero-name">J3 Recipes</p>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function RecipeList() {
             className="brand-mark"
             aria-hidden="true"
           />
-          <h1 className="app-title">J3 Recipies</h1>
+          <h1 className="app-title">J3 Recipes</h1>
         </div>
         <input
           type="search"

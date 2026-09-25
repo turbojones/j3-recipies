@@ -10,7 +10,7 @@ const TITLE_SIZE = 20
 const HEADING_SIZE = 13
 const BODY_SIZE = 11
 const BRAND_NAVY = [30, 58, 95] as const
-const BRAND_NAME = 'J3 Recipies'
+const BRAND_NAME = 'J3 Recipes'
 const FOOTER_Y = PAGE_HEIGHT - 28
 
 async function loadImageDataUrl(src: string): Promise<string | null> {
