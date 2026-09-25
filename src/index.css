@@ -122,8 +122,8 @@ button {
 .page-list {
   background-color: var(--brand-navy);
   background-image: linear-gradient(
-      rgba(247, 245, 242, 0.88),
-      rgba(247, 245, 242, 0.94)
+      rgba(247, 245, 242, 0.45),
+      rgba(247, 245, 242, 0.62)
     ),
     url('/j3-brand.jpg');
   background-size: cover;
@@ -147,7 +147,27 @@ button {
 }
 
 .page-list .content {
-  background: rgba(247, 245, 242, 0.9);
+  background: transparent;
+}
+
+.page-list .recipe-row-title {
+  text-shadow: 0 1px 0 rgba(247, 245, 242, 0.85);
+}
+
+.page-list .recipe-row-meta {
+  text-shadow: 0 1px 0 rgba(247, 245, 242, 0.85);
+}
+
+.page-list .recipe-list {
+  background: rgba(247, 245, 242, 0.55);
+  border-radius: 12px;
+  padding: 0 0.65rem;
+}
+
+.page-list .empty {
+  background: rgba(247, 245, 242, 0.7);
+  border-radius: 12px;
+  padding: 1rem;
 }
 
 
