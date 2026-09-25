@@ -163,18 +163,19 @@ button {
     position: relative;
     inset: auto;
     order: 1;
-    flex: 1 1 48%;
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
     padding: 2rem 2.25rem;
     background: var(--brand-navy);
+    min-width: 0;
   }
 
   .brand-hero-img {
     order: 2;
-    flex: 1 1 52%;
-    width: auto;
-    min-width: 0;
+    flex: 0 0 auto;
+    width: min(480px, 42vw);
+    max-width: 52%;
     height: 100%;
     min-height: 280px;
     align-self: stretch;
