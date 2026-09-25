@@ -378,7 +378,11 @@ button {
 }
 
 .page.detail-page .content.detail {
-  padding-bottom: 5.5rem;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px) + 1.25rem);
+}
+
+.page.detail-page .content.detail .section:last-of-type {
+  margin-bottom: 0.5rem;
 }
 
 .sticky-cta-bar {
