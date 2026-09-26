@@ -1,9 +1,11 @@
 export type RecipeGroup =
-  | 'desserts'
+  | 'dinner'
   | 'muffins-and-bread'
   | 'cookies'
   | 'cakes'
   | 'extras'
+  | 'salad'
+  | 'side'
 
 export type Recipe = {
   id: string
@@ -17,7 +19,9 @@ export type Recipe = {
 }
 
 export const RECIPE_GROUPS: { id: RecipeGroup; label: string }[] = [
-  { id: 'desserts', label: 'Desserts' },
+  { id: 'dinner', label: 'Dinners' },
+  { id: 'salad', label: 'Salads' },
+  { id: 'side', label: 'Sides' },
   { id: 'muffins-and-bread', label: 'Muffins and Bread' },
   { id: 'cookies', label: 'Cookies' },
   { id: 'cakes', label: 'Cakes' },

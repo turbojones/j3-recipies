@@ -135,10 +135,7 @@ button {
 }
 
 .brand-hero-overlay {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: 1.5rem 1rem 0.75rem;
-  background: linear-gradient(transparent, rgba(30, 58, 95, 0.75));
+  display: none;
 }
 
 .brand-hero-name {
@@ -160,11 +157,11 @@ button {
   }
 
   .brand-hero-overlay {
+    display: flex;
     position: relative;
     inset: auto;
     order: 1;
     flex: 1 1 auto;
-    display: flex;
     align-items: center;
     padding: 2rem 2.25rem;
     background: var(--brand-navy);
@@ -313,12 +310,9 @@ button {
 
 .steps-list {
   margin: 0;
-  padding-left: 1.25rem;
 }
 
-.steps-list li {
-  margin-bottom: 0.65rem;
-}
+/* numbered via counter so .list-subhead is skipped — see below */
 
 /* Full-width CTA under content; content already capped & centered */
 .cta {
@@ -436,6 +430,32 @@ button {
   margin-bottom: 1rem;
 }
 
+.share-button {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1.5px solid #d4cfc7;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--brand-navy);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.share-button:hover {
+  border-color: var(--brand-navy);
+  background: #f0f3f7;
+}
+
+.share-button:active {
+  background: #e4eaf2;
+}
+
 .back-button {
   display: inline-flex;
   align-items: center;
@@ -480,4 +500,49 @@ button {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--brand-navy);
+}
+
+.detail-header-actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.detail-header-actions .pdf-button {
+  margin-top: 0;
+}
+
+/* —— Quiet recipe walkthrough video (under title) —— */
+.walkthrough-video-block {
+  margin: 0.85rem 0 1.35rem;
+}
+
+.walkthrough-video {
+  display: block;
+  width: 100%;
+  max-width: 36rem;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 12px;
+  background: #1a1a1a;
+  border: 1px solid #d4cfc7;
+  vertical-align: middle;
+}
+
+.walkthrough-video-caption {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #8a847c;
+}
+
+@media print {
+  .walkthrough-video-block {
+    display: none !important;
+  }
 }

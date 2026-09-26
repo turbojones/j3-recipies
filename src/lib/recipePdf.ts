@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf'
 import type { Recipe } from '../types'
+import { isListHeading, listHeadingLabel } from './listHeading'
 
 const MARGIN = 48
 const PAGE_WIDTH = 612 // US Letter points
@@ -110,6 +111,16 @@ export async function downloadRecipePdf(recipe: Recipe) {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(BODY_SIZE)
   for (const item of recipe.ingredients) {
+    if (isListHeading(item)) {
+      y += 4
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(BODY_SIZE)
+      y = ensureSpace(doc, y, LINE)
+      doc.text(listHeadingLabel(item), MARGIN, y)
+      y += LINE
+      doc.setFont('helvetica', 'normal')
+      continue
+    }
     const lines = wrapText(doc, `•  ${item}`, CONTENT_WIDTH)
     for (const line of lines) {
       y = ensureSpace(doc, y, LINE)
@@ -127,15 +138,27 @@ export async function downloadRecipePdf(recipe: Recipe) {
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(BODY_SIZE)
-  recipe.steps.forEach((step, i) => {
-    const lines = wrapText(doc, `${i + 1}.  ${step}`, CONTENT_WIDTH)
+  let stepNum = 0
+  for (const step of recipe.steps) {
+    if (isListHeading(step)) {
+      y += 4
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(BODY_SIZE)
+      y = ensureSpace(doc, y, LINE)
+      doc.text(listHeadingLabel(step), MARGIN, y)
+      y += LINE
+      doc.setFont('helvetica', 'normal')
+      continue
+    }
+    stepNum += 1
+    const lines = wrapText(doc, `${stepNum}.  ${step}`, CONTENT_WIDTH)
     for (const line of lines) {
       y = ensureSpace(doc, y, LINE)
       doc.text(line, MARGIN, y)
       y += LINE
     }
     y += 4
-  })
+  }
 
   drawFooter(doc)
 
