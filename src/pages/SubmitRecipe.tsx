@@ -27,6 +27,9 @@ type Step = 'form' | 'preview' | 'done'
 type Tab = 'type' | 'upload'
 type AutofillState = 'idle' | 'running' | 'done' | 'failed'
 
+/** Photo auto-fill is off until the Vercel AI Gateway has a card on file. Set VITE_AUTOFILL_ENABLED=true to turn it back on. */
+const AUTOFILL_ON = import.meta.env.VITE_AUTOFILL_ENABLED === 'true'
+
 function fieldsEmpty(f: DraftFields): boolean {
   return !f.title.trim() && !f.ingredients.trim() && !f.steps.trim()
 }
@@ -137,7 +140,7 @@ export default function SubmitRecipe() {
         }
       }),
     )
-    if (fieldsEmpty(fieldsRef.current) && photosRef.current.some((p) => p.status === 'done')) {
+    if (AUTOFILL_ON && fieldsEmpty(fieldsRef.current) && photosRef.current.some((p) => p.status === 'done')) {
       void runAutofill()
     }
   }
@@ -266,7 +269,7 @@ export default function SubmitRecipe() {
   }
 
   const busy = autofill === 'running'
-  const canRefill = photos.some((p) => p.status === 'done') && !busy
+  const canRefill = AUTOFILL_ON && photos.some((p) => p.status === 'done') && !busy
 
   return (
     <div className="page">
@@ -332,8 +335,9 @@ export default function SubmitRecipe() {
           {tab === 'upload' && (
             <div className="tab-panel" role="tabpanel">
               <p className="field-hint">
-                Snap or choose photos of the recipe card (front and back, or each page), or add a PDF. Put them in
-                page order and we’ll fill in the form for you to check.
+                {AUTOFILL_ON
+                  ? 'Snap or choose photos of the recipe card (front and back, or each page), or add a PDF. Put them in page order and we’ll fill in the form for you to check.'
+                  : 'Attach photos of the recipe (front and back, or each page), or a PDF, then type it in below.'}
               </p>
               <PhotoStrip
                 photos={photos}
@@ -348,6 +352,12 @@ export default function SubmitRecipe() {
                   Fill in the form from these photos
                 </button>
               )}
+            </div>
+          )}
+
+          {tab === 'upload' && !AUTOFILL_ON && (
+            <div className="tab-panel" role="tabpanel" aria-label="Recipe details">
+              <DraftFieldsEditor fields={fields} onChange={setFields} idPrefix="submit-upload" />
             </div>
           )}
 
