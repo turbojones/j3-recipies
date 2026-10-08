@@ -11,7 +11,6 @@ export default function RecipeDetail() {
   const [makeIt, setMakeIt] = useState(false)
   const [checked, setChecked] = useState<Record<number, boolean>>({})
   const detailTopRef = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const [shareCopied, setShareCopied] = useState(false)
 
   useEffect(() => {
@@ -45,9 +44,6 @@ export default function RecipeDetail() {
       </div>
     )
   }
-
-  const walkthroughSrc = `/walkthroughs/${recipe.id}.mp4`
-  const walkthroughVtt = `/walkthroughs/${recipe.id}.vtt`
 
   const toggleIngredient = (index: number) => {
     setChecked((prev) => ({ ...prev, [index]: !prev[index] }))
@@ -151,30 +147,13 @@ export default function RecipeDetail() {
           {recipe.cookTimeMinutes} min · {recipe.servings} servings · {recipe.cuisine}
         </p>
 
-        <section className="walkthrough-video-block no-print" aria-label="Recipe walkthrough video">
-          <video
-            ref={videoRef}
-            className="walkthrough-video"
-            controls
-            playsInline
-            muted
-            preload="metadata"
-            poster="/j3-brand.jpg"
-          >
-            <source src={walkthroughSrc} type="video/mp4" />
-            <track
-              kind="captions"
-              src={walkthroughVtt}
-              srcLang="en"
-              label="English"
-              default
-            />
-          </video>
-          <p className="walkthrough-video-caption">Short walkthrough · muted by default</p>
-        </section>
-
         <section className="section">
           <h2>Ingredients</h2>
+          {makeIt && (
+            <p className="make-it-prompt">
+              Check the box as you use each ingredient to keep track
+            </p>
+          )}
           <ul className={makeIt ? 'ingredient-list make-it' : 'ingredient-list'}>
             {recipe.ingredients.map((item, i) =>
               isListHeading(item) ? (

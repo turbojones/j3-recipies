@@ -48,7 +48,10 @@ export default function RecipeList() {
   const grouped = useMemo(() => {
     return RECIPE_GROUPS.map((g) => ({
       ...g,
-      recipes: filtered.filter((r) => r.group === g.id),
+      recipes: filtered
+        .filter((r) => r.group === g.id)
+        .slice()
+        .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })),
     })).filter((g) => g.recipes.length > 0)
   }, [filtered])
 
