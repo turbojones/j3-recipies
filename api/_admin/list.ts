@@ -36,5 +36,6 @@ export async function GET(req: Request): Promise<Response> {
         (s.status === 'pending' || s.status === 'approved') &&
         (s.needsTranscription === true || draftProblem(s.draft) !== null),
     }))
-  return json({ items })
+  const pendingCount = subs.filter((s) => s.status === 'pending').length
+  return json({ items, pendingCount })
 }

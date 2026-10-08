@@ -148,15 +148,19 @@ function ReviewList({ onUnauthorized, logoutButton }: { onUnauthorized: () => vo
   const flash = (location.state as { flash?: string } | null)?.flash
   const tab = (TABS.find((t) => t.id === params.get('tab'))?.id ?? 'pending') as TabId
   const [items, setItems] = useState<SubmissionSummary[] | null>(null)
+  const [pendingCount, setPendingCount] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
     setItems(null)
     setError(null)
-    api<{ items: SubmissionSummary[] }>(`/api/admin/list?status=${tab}`)
+    api<{ items: SubmissionSummary[]; pendingCount?: number }>(`/api/admin/list?status=${tab}`)
       .then((r) => {
-        if (!cancelled) setItems(r.items)
+        if (!cancelled) {
+          setItems(r.items)
+          if (typeof r.pendingCount === 'number') setPendingCount(r.pendingCount)
+        }
       })
       .catch((e) => {
         if (cancelled) return
@@ -184,7 +188,7 @@ function ReviewList({ onUnauthorized, logoutButton }: { onUnauthorized: () => vo
               className={tab === t.id ? 'tab active' : 'tab'}
               onClick={() => setParams(t.id === 'pending' ? {} : { tab: t.id }, { replace: true })}
             >
-              {t.label}
+              {t.id === 'pending' && pendingCount !== null ? `${t.label} (${pendingCount})` : t.label}
             </button>
           ))}
         </div>
