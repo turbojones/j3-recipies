@@ -117,6 +117,11 @@ export default function RecipeList() {
             </section>
           ))
         )}
+        <p className="submit-link-wrap">
+          <Link to="/submit" className="submit-link">
+            Submit a recipe
+          </Link>
+        </p>
       </main>
     </div>
   )
