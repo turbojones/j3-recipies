@@ -2,6 +2,7 @@ import { clientIp, error, json, readJson, throttle } from './_lib/http.js'
 import {
   ALLOWED_TYPES,
   cleanCuisine,
+  cleanDescription,
   cleanDraft,
   cleanName,
   draftProblem,
@@ -18,6 +19,8 @@ type Body = {
   draft?: unknown
   photos?: unknown
   autofilled?: unknown
+  mode?: unknown
+  description?: unknown
 }
 
 /** Public: create a pending submission. */
@@ -32,11 +35,19 @@ export async function POST(req: Request): Promise<Response> {
 
   const name = cleanName(body.name)
   if (!name) return error(400, 'Your name is required.')
+  const photoMode = body.mode === 'upload'
   const draft = cleanDraft(body.draft)
-  const problem = draftProblem(draft)
-  if (problem) return error(400, problem)
-
+  const description = photoMode ? cleanDescription(body.description) : ''
   const rawPhotos = Array.isArray(body.photos) ? body.photos : []
+  if (photoMode) {
+    // Photo submissions: just a recipe name, an optional description, and the photos.
+    if (!draft.title) return error(400, 'Recipe name is required.')
+    if (rawPhotos.length < 1) return error(400, 'Add at least one photo.')
+  } else {
+    const problem = draftProblem(draft)
+    if (problem) return error(400, problem)
+  }
+
   if (rawPhotos.length > LIMITS.photos) return error(400, `Up to ${LIMITS.photos} photos.`)
   if (!rawPhotos.every((p): p is string => typeof p === 'string' && UPLOAD_PATH_RE.test(p))) {
     return error(400, 'Invalid photo.')
@@ -64,11 +75,12 @@ export async function POST(req: Request): Promise<Response> {
     createdAt: now,
     updatedAt: now,
     submitterName: name,
-    source: photos.length > 0 ? 'upload' : 'typed',
+    source: photoMode ? 'upload' : 'typed',
     photos,
     draft,
     cuisine: cleanCuisine(undefined),
     autofilled: body.autofilled === true,
+    ...(description ? { description } : {}),
   }
   await writeSubmission(sub)
   return json({ ok: true, id: sub.id }, 201)

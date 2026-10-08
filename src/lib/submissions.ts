@@ -25,6 +25,8 @@ export type Submission = {
   draft: Draft
   cuisine: string
   autofilled: boolean
+  description?: string
+  needsTranscription?: boolean
   recipe?: Recipe
   approvedAt?: string
   rejectedAt?: string

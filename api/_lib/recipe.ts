@@ -45,6 +45,10 @@ export type Submission = {
   draft: Draft
   cuisine: string
   autofilled: boolean
+  /** Short note from the submitter (photo submissions). */
+  description?: string
+  /** Approved from photos only; Chef types it up from the photos. */
+  needsTranscription?: boolean
   recipe?: Recipe
   approvedAt?: string
   rejectedAt?: string
@@ -61,6 +65,7 @@ export const LIMITS = {
   steps: 80,
   tips: 40,
   photos: 10,
+  description: 1000,
   photoBytes: 10 * 1024 * 1024,
 }
 
@@ -104,6 +109,10 @@ export function isGroup(v: unknown): v is RecipeGroup {
 
 export function cleanName(v: unknown): string {
   return str(v, LIMITS.name)
+}
+
+export function cleanDescription(v: unknown): string {
+  return typeof v === 'string' ? v.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, LIMITS.description) : ''
 }
 
 export function cleanCuisine(v: unknown): string {

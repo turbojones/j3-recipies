@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DraftFieldsEditor from '../components/DraftFieldsEditor'
 import PageTopBar from '../components/PageTopBar'
@@ -14,25 +14,17 @@ import {
 } from '../lib/imageUpload'
 import {
   api,
-  draftToFields,
   draftToRecipe,
   emptyFields,
   fieldsToDraft,
-  type Draft,
   type DraftFields,
 } from '../lib/submissions'
 import { isListHeading } from '../lib/listHeading'
 
 type Step = 'form' | 'preview' | 'done'
 type Tab = 'type' | 'upload'
-type AutofillState = 'idle' | 'running' | 'done' | 'failed'
-
-/** Photo auto-fill is off until the Vercel AI Gateway has a card on file. Set VITE_AUTOFILL_ENABLED=true to turn it back on. */
-const AUTOFILL_ON = import.meta.env.VITE_AUTOFILL_ENABLED === 'true'
-
-function fieldsEmpty(f: DraftFields): boolean {
-  return !f.title.trim() && !f.ingredients.trim() && !f.steps.trim()
-}
+/** Photo submissions only ask for a recipe name and a short description. */
+const DESCRIPTION_MAX = 1000
 
 export default function SubmitRecipe() {
   const [step, setStep] = useState<Step>('form')
@@ -41,19 +33,14 @@ export default function SubmitRecipe() {
   const [website, setWebsite] = useState('') // honeypot
   const [fields, setFields] = useState<DraftFields>(emptyFields)
   const [photos, setPhotos] = useState<PhotoItem[]>([])
-  const [autofill, setAutofill] = useState<AutofillState>('idle')
-  const [autofillNote, setAutofillNote] = useState<string | null>(null)
-  const [autofilled, setAutofilled] = useState(false)
+  const [photoTitle, setPhotoTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   const dirRef = useRef(randomHex(16))
   const counterRef = useRef(0)
   const photosRef = useRef<PhotoItem[]>([])
-  const fieldsRef = useRef<DraftFields>(fields)
-  useEffect(() => {
-    fieldsRef.current = fields
-  }, [fields])
 
   /** Update photos and keep the ref in sync immediately (async upload callbacks read it). */
   const commitPhotos = (fn: (prev: PhotoItem[]) => PhotoItem[]) => {
@@ -75,30 +62,6 @@ export default function SubmitRecipe() {
 
   const updatePhoto = (key: string, patch: Partial<PhotoItem>) =>
     commitPhotos((prev) => prev.map((p) => (p.key === key ? { ...p, ...patch } : p)))
-
-  const runAutofill = useCallback(async () => {
-    const paths = photosRef.current.filter((p) => p.status === 'done' && p.pathname).map((p) => p.pathname!)
-    if (paths.length === 0) return
-    setAutofill('running')
-    setAutofillNote(null)
-    try {
-      const { draft } = await api<{ draft: Draft }>('/api/autofill', {
-        method: 'POST',
-        body: JSON.stringify({ photos: paths }),
-      })
-      if (!draft.title && draft.ingredients.length === 0 && draft.steps.length === 0) {
-        throw new Error('empty')
-      }
-      setFields(draftToFields(draft))
-      setAutofilled(true)
-      setAutofill('done')
-      setAutofillNote('We filled this in from your photos. Please check it over.')
-    } catch {
-      setAutofill('failed')
-      setAutofillNote("We couldn't read the photos automatically. Please type the recipe in below. Your photos stay attached.")
-    }
-    setTab('type')
-  }, [])
 
   const addFiles = async (files: File[]) => {
     setFormError(null)
@@ -140,9 +103,6 @@ export default function SubmitRecipe() {
         }
       }),
     )
-    if (AUTOFILL_ON && fieldsEmpty(fieldsRef.current) && photosRef.current.some((p) => p.status === 'done')) {
-      void runAutofill()
-    }
   }
 
   const removePhoto = (key: string) => {
@@ -165,39 +125,53 @@ export default function SubmitRecipe() {
 
   const draft = fieldsToDraft(fields)
 
+  const uploadedPaths = photos.filter((p) => p.status === 'done' && p.pathname).map((p) => p.pathname!)
+
   const validate = (): string | null => {
     if (!name.trim()) return 'Please add your name.'
+    if (tab === 'upload') {
+      if (!photoTitle.trim()) return 'Please add the recipe name.'
+      if (photos.some((p) => p.status === 'uploading')) return 'Please wait for the photos to finish uploading.'
+      if (uploadedPaths.length === 0) return 'Please add at least one photo of the recipe.'
+      return null
+    }
     if (!draft.title) return 'Please add a recipe title.'
     if (draft.ingredients.filter((l) => !isListHeading(l)).length === 0) return 'Please add at least one ingredient.'
     if (draft.steps.filter((l) => !isListHeading(l)).length === 0) return 'Please add at least one step.'
-    if (photos.some((p) => p.status === 'uploading')) return 'Please wait for the photos to finish uploading.'
-    if (autofill === 'running') return 'Please wait while we read your photos.'
     return null
   }
 
-  const goPreview = () => {
+  const onFormSubmit = () => {
     const problem = validate()
     setFormError(problem)
     if (problem) {
       if (!name.trim()) document.getElementById('submit-name')?.focus()
+      else if (tab === 'upload' && !photoTitle.trim()) document.getElementById('submit-photo-title')?.focus()
       return
     }
-    setStep('preview')
+    if (tab === 'upload') void submit()
+    else setStep('preview')
   }
 
   const submit = async () => {
     setSubmitting(true)
     setFormError(null)
+    const photoMode = tab === 'upload'
     try {
       await api('/api/submit', {
         method: 'POST',
-        body: JSON.stringify({
-          name: name.trim(),
-          website,
-          draft,
-          autofilled,
-          photos: photos.filter((p) => p.status === 'done' && p.pathname).map((p) => p.pathname),
-        }),
+        body: JSON.stringify(
+          photoMode
+            ? {
+                mode: 'upload',
+                name: name.trim(),
+                website,
+                draft: { ...fieldsToDraft(emptyFields()), title: photoTitle.trim() },
+                description: description.trim(),
+                photos: uploadedPaths,
+              }
+            : { mode: 'typed', name: name.trim(), website, draft, photos: [] },
+        ),
       })
       setStep('done')
     } catch (e) {
@@ -211,9 +185,8 @@ export default function SubmitRecipe() {
     for (const p of photos) if (p.previewUrl) URL.revokeObjectURL(p.previewUrl)
     commitPhotos(() => [])
     setFields(emptyFields())
-    setAutofill('idle')
-    setAutofillNote(null)
-    setAutofilled(false)
+    setPhotoTitle('')
+    setDescription('')
     setFormError(null)
     setTab('type')
     dirRef.current = randomHex(16)
@@ -241,7 +214,6 @@ export default function SubmitRecipe() {
   }
 
   if (step === 'preview') {
-    const attached = photos.filter((p) => p.status === 'done').length
     return (
       <div className="page">
         <main className="content form-page">
@@ -250,10 +222,7 @@ export default function SubmitRecipe() {
           <div className="preview-card">
             <RecipePreview recipe={{ ...draftToRecipe(draft), cuisine: '' }} />
           </div>
-          <p className="preview-by">
-            Submitted by {name.trim()}
-            {attached > 0 && ` · ${attached} photo${attached === 1 ? '' : 's'} attached`}
-          </p>
+          <p className="preview-by">Submitted by {name.trim()}</p>
           {formError && <p className="form-error" role="alert">{formError}</p>}
           <div className="form-actions">
             <button type="button" className="cta" onClick={() => { void submit() }} disabled={submitting}>
@@ -268,8 +237,7 @@ export default function SubmitRecipe() {
     )
   }
 
-  const busy = autofill === 'running'
-  const canRefill = AUTOFILL_ON && photos.some((p) => p.status === 'done') && !busy
+  const uploading = photos.some((p) => p.status === 'uploading')
 
   return (
     <div className="page">
@@ -283,7 +251,7 @@ export default function SubmitRecipe() {
           noValidate
           onSubmit={(e) => {
             e.preventDefault()
-            goPreview()
+            onFormSubmit()
           }}
         >
           <div className="field">
@@ -334,38 +302,35 @@ export default function SubmitRecipe() {
 
           {tab === 'upload' && (
             <div className="tab-panel" role="tabpanel">
-              <p className="field-hint">
-                {AUTOFILL_ON
-                  ? 'Snap or choose photos of the recipe card (front and back, or each page), or add a PDF. Put them in page order and we’ll fill in the form for you to check.'
-                  : 'Attach photos of the recipe (front and back, or each page), or a PDF, then type it in below.'}
-              </p>
-              <PhotoStrip
-                photos={photos}
-                onAdd={(f) => { void addFiles(f) }}
-                onRemove={removePhoto}
-                onMove={movePhoto}
-                canAdd={photos.length < MAX_PHOTOS}
-              />
-              {busy && <p className="autofill-status">Reading your photos…</p>}
-              {canRefill && (
-                <button type="button" className="secondary-button" onClick={() => { void runAutofill() }}>
-                  Fill in the form from these photos
-                </button>
-              )}
-            </div>
-          )}
-
-          {tab === 'upload' && !AUTOFILL_ON && (
-            <div className="tab-panel" role="tabpanel" aria-label="Recipe details">
-              <DraftFieldsEditor fields={fields} onChange={setFields} idPrefix="submit-upload" />
-            </div>
-          )}
-
-          {tab === 'type' && (
-            <div className="tab-panel" role="tabpanel">
-              {photos.length > 0 && (
-                <div className="attached-photos">
-                  <p className="field-label">Attached photos</p>
+              <div className="form-fields">
+                <div className="field">
+                  <label htmlFor="submit-photo-title">Recipe name</label>
+                  <input
+                    id="submit-photo-title"
+                    className="text-input"
+                    value={photoTitle}
+                    onChange={(e) => setPhotoTitle(e.target.value)}
+                    maxLength={120}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="submit-description">Description</label>
+                  <textarea
+                    id="submit-description"
+                    className="text-input"
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    maxLength={DESCRIPTION_MAX}
+                    placeholder="A line or two about the recipe (optional)"
+                  />
+                </div>
+                <div className="field">
+                  <p className="field-label">Photos</p>
+                  <p className="field-hint">
+                    Snap or choose photos of the recipe card (front and back, or each page), or add a PDF. We’ll type it up from these.
+                  </p>
                   <PhotoStrip
                     photos={photos}
                     onAdd={(f) => { void addFiles(f) }}
@@ -373,33 +338,21 @@ export default function SubmitRecipe() {
                     onMove={movePhoto}
                     canAdd={photos.length < MAX_PHOTOS}
                   />
-                  {canRefill && (
-                    <button
-                      type="button"
-                      className="text-button"
-                      onClick={() => {
-                        if (fieldsEmpty(fields) || window.confirm('Replace what’s in the form with what we read from the photos?')) {
-                          void runAutofill()
-                        }
-                      }}
-                    >
-                      Re-read photos
-                    </button>
-                  )}
                 </div>
-              )}
-              {busy && <p className="autofill-status">Reading your photos…</p>}
-              {autofillNote && (
-                <p className={autofill === 'failed' ? 'autofill-note warn' : 'autofill-note'}>{autofillNote}</p>
-              )}
+              </div>
+            </div>
+          )}
+
+          {tab === 'type' && (
+            <div className="tab-panel" role="tabpanel">
               <DraftFieldsEditor fields={fields} onChange={setFields} idPrefix="submit" />
             </div>
           )}
 
           {formError && <p className="form-error" role="alert">{formError}</p>}
           <div className="form-actions">
-            <button type="submit" className="cta" disabled={busy}>
-              Preview
+            <button type="submit" className="cta" disabled={submitting || (tab === 'upload' && uploading)}>
+              {tab === 'upload' ? (submitting ? 'Submitting…' : uploading ? 'Uploading…' : 'Submit recipe') : 'Preview'}
             </button>
           </div>
         </form>

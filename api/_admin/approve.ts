@@ -13,14 +13,23 @@ export async function POST(req: Request): Promise<Response> {
   if (body?.draft !== undefined) sub.draft = cleanDraft(body.draft)
   if (isGroup(body?.group)) sub.draft.group = body.group
   if (body?.cuisine !== undefined) sub.cuisine = cleanCuisine(body.cuisine)
-  const problem = draftProblem(sub.draft)
-  if (problem) return error(400, problem)
-  if (!sub.draft.cookTimeMinutes || !sub.draft.servings) {
-    return error(400, 'Cook time and servings are needed before approving.')
-  }
+  const incomplete = draftProblem(sub.draft) !== null || !sub.draft.cookTimeMinutes || !sub.draft.servings
   const now = new Date().toISOString()
+  if (incomplete && sub.source === 'upload' && sub.photos.length > 0) {
+    // Photo-only submission: approve as-is; Chef types it up from the photos.
+    if (!sub.draft.title) return error(400, 'Recipe name is required.')
+    sub.needsTranscription = true
+    delete sub.recipe
+  } else {
+    const problem = draftProblem(sub.draft)
+    if (problem) return error(400, problem)
+    if (!sub.draft.cookTimeMinutes || !sub.draft.servings) {
+      return error(400, 'Cook time and servings are needed before approving.')
+    }
+    sub.needsTranscription = false
+    sub.recipe = toRecipe(sub.draft, sub.cuisine)
+  }
   sub.status = 'approved'
-  sub.recipe = toRecipe(sub.draft, sub.cuisine)
   sub.approvedAt = now
   sub.updatedAt = now
   delete sub.rejectedAt

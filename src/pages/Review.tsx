@@ -331,7 +331,7 @@ function ReviewDetail({
         method: 'POST',
         body: JSON.stringify({ id: sub.id, draft, cuisine }),
       })
-      navigate('/review', { state: { flash: `Approved “${r.submission.draft.title}”. It’s ready to add to the site.` } })
+      navigate('/review', { state: { flash: r.submission.needsTranscription ? `Approved “${r.submission.draft.title}”. Chef will type it up from the photos.` : `Approved “${r.submission.draft.title}”. It’s ready to add to the site.` } })
     }, 'Could not approve.')
 
   const reject = () => {
@@ -362,7 +362,9 @@ function ReviewDetail({
 
   const statusLine =
     sub.status === 'approved'
-      ? 'Approved, waiting to be added to the site.'
+      ? sub.needsTranscription
+        ? 'Approved. Chef will type it up from the photos and add it.'
+        : 'Approved, waiting to be added to the site.'
       : sub.status === 'added'
         ? 'Approved and added to the site.'
         : sub.status === 'rejected'
@@ -398,6 +400,15 @@ function ReviewDetail({
             </div>
 
             {statusLine && <p className="flash">{statusLine}</p>}
+            {sub.description && (
+              <div className="submitter-note">
+                <p className="field-label">Their description</p>
+                <p>{sub.description}</p>
+              </div>
+            )}
+            {sub.source === 'upload' && sub.status === 'pending' && (
+              <p className="field-hint">Sent as photos. You can approve it as is and Chef will type it up, or fill in the recipe below first.</p>
+            )}
             {duplicate && (
               <p className="dup-warning" role="status">
                 Heads up: this looks like an existing recipe, <Link to={`/recipe/${duplicate.id}`}>{duplicate.title}</Link>.
