@@ -210,6 +210,7 @@ function ReviewList({ onUnauthorized, logoutButton }: { onUnauthorized: () => vo
                     <span className="recipe-row-title">{s.title || 'Untitled'}</span>
                     <span className="review-row-meta">
                       {groupLabel(s.group)} · {s.submitterName} · {formatDate(s.createdAt)}
+                      {s.photosOnly && <span className="status-tag photos-only">Photos only</span>}
                       {s.status === 'added' && <span className="status-tag">Added</span>}
                     </span>
                   </span>

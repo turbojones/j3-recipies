@@ -1181,3 +1181,8 @@ textarea.text-input {
 }
 .submitter-note p { margin: 0; white-space: pre-wrap; }
 .submitter-note .field-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px; }
+
+.status-tag.photos-only {
+  background: #fdf0dc;
+  color: #8a4b08;
+}

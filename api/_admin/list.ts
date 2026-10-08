@@ -1,5 +1,6 @@
 import { requireAdmin } from '../_lib/auth.js'
 import { error, json } from '../_lib/http.js'
+import { draftProblem } from '../_lib/recipe.js'
 import { listSubmissions } from '../_lib/store.js'
 
 const FILTERS: Record<string, string[]> = {
@@ -29,6 +30,11 @@ export async function GET(req: Request): Promise<Response> {
       photoCount: s.photos.length,
       thumb: s.photos.find((p) => p.contentType.startsWith('image/'))?.pathname ?? null,
       hasPdf: s.photos.some((p) => p.contentType === 'application/pdf'),
+      // Sent as photos and the recipe text isn't filled in yet.
+      photosOnly:
+        s.source === 'upload' &&
+        (s.status === 'pending' || s.status === 'approved') &&
+        (s.needsTranscription === true || draftProblem(s.draft) !== null),
     }))
   return json({ items })
 }

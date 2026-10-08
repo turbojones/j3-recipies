@@ -43,6 +43,7 @@ export type SubmissionSummary = {
   photoCount: number
   thumb: string | null
   hasPdf: boolean
+  photosOnly?: boolean
 }
 
 /** Editable text form of a draft (one item per line). */
