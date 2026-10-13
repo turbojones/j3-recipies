@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { recipes } from '../data/recipes'
 import { downloadRecipePdf } from '../lib/recipePdf'
 import { isListHeading, listHeadingLabel } from '../lib/listHeading'
+import { useWakeLock, wakeLockSupported } from '../lib/wakeLock'
 
 export default function RecipeDetail() {
   const { id } = useParams<{ id: string }>()
@@ -12,10 +13,18 @@ export default function RecipeDetail() {
   const [checked, setChecked] = useState<Record<number, boolean>>({})
   const detailTopRef = useRef<HTMLDivElement>(null)
   const [shareCopied, setShareCopied] = useState(false)
+  const [keepOn, setKeepOn] = useState(false)
+  const autoKeepOn = useRef(false)
+  const canKeepOn = useMemo(() => wakeLockSupported(), [])
+  useWakeLock(keepOn)
 
   useEffect(() => {
     setMakeIt(false)
     setChecked({})
+    if (autoKeepOn.current) {
+      autoKeepOn.current = false
+      setKeepOn(false)
+    }
     window.scrollTo(0, 0)
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
@@ -62,6 +71,10 @@ export default function RecipeDetail() {
   const handleDone = () => {
     setChecked({})
     setMakeIt(false)
+    if (autoKeepOn.current) {
+      autoKeepOn.current = false
+      setKeepOn(false)
+    }
     scrollToRecipeTop()
   }
 
@@ -146,6 +159,19 @@ export default function RecipeDetail() {
         <p className="detail-meta">
           {recipe.cookTimeMinutes} min · {recipe.servings} servings · {recipe.cuisine}
         </p>
+        {canKeepOn && (
+          <label className="keep-on no-print">
+            <input
+              type="checkbox"
+              checked={keepOn}
+              onChange={(e) => {
+                autoKeepOn.current = false
+                setKeepOn(e.target.checked)
+              }}
+            />
+            Keep screen on
+          </label>
+        )}
 
         <section className="section">
           <h2>Ingredients</h2>
@@ -205,6 +231,10 @@ export default function RecipeDetail() {
             className="cta"
             onClick={() => {
               setMakeIt(true)
+              if (!keepOn) {
+                autoKeepOn.current = true
+                setKeepOn(true)
+              }
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }}
           >
