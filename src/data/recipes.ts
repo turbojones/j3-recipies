@@ -717,7 +717,7 @@ export const recipes: Recipe[] = [
   {
     id: 'maple-vanilla-candied-pecans',
     title: 'Maple Vanilla Candied Pecans',
-    group: 'cookies',
+    group: 'extras',
     cuisine: 'American',
     cookTimeMinutes: 25,
     servings: 8,
